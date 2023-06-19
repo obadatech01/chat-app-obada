@@ -21,7 +21,6 @@ class Messages extends React.Component {
        message.outgoing = message.receiver !== this.props.user.id;
        return <Message key={index} message={message} />
    };
-
 }
 
 export default Messages;
