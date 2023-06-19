@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row } from 'reactstrap';
-import { ContactHeader, Contacts } from 'components';
+import { ChatHeader, ContactHeader, Contacts } from 'components';
 
 class Chat extends React.Component {
   state = {
@@ -28,7 +28,9 @@ class Chat extends React.Component {
           <Contacts contacts={this.state.contacts} messages={this.state.messages} />
         </div>
 
-        <div id="messages-section" className="col-6 col-md-8" ></div>
+        <div id="messages-section" className="col-6 col-md-8" >
+          <ChatHeader contact="" />
+        </div>
       </Row>
     )
   }
