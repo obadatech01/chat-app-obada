@@ -21,12 +21,16 @@ class Chat extends React.Component {
     ],
   }
 
+  onChatNavigate = contact => {
+    this.setState({contact})
+  }
+
   render() {
     return (
       <Row className="h-100">
         <div id="contacts-section" className="col-6 col-md-4" >
           <ContactHeader />
-          <Contacts contacts={this.state.contacts} messages={this.state.messages} />
+          <Contacts contacts={this.state.contacts} messages={this.state.messages} onChatNavigate={this.onChatNavigate} />
         </div>
 
         <div id="messages-section" className="col-6 col-md-8" >

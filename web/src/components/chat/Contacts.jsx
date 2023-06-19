@@ -32,7 +32,7 @@ export default class Contacts extends React.Component {
     let lastMessage = messages[messages.length-1];
 
     return (
-      <div className='w-100' key={index}>
+      <div className='w-100' key={index} onClick={this.props.onChatNavigate.bind(this, contact)}>
         <Contact contact={contact} message={lastMessage} />
       </div>
     )
