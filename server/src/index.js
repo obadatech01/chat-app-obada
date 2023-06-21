@@ -2,12 +2,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const http = require('http');
 const ApiError = require('./utils/apiError');
 const globalError = require('./middlewares/errorMiddleware');
 const connectDB = require('./db/databaseConfig');
 // Routes
 const mountRoutes = require('./routes/index');
 const mongoose = require('mongoose');
+require('./socketHandler');
 
 mongoose.set('strictQuery', false);
 
@@ -49,9 +51,27 @@ app.all('*', (req, res, next) => {
 // Global error handling middleware for express
 app.use(globalError);
 const PORT = process.env.PORT || 8000;
-const server = app.listen(PORT, () => {
-  console.log(`App running at ${PORT}`);
+app.set('PORT', PORT);
+
+/**
+ * Create HTTP server.
+ */
+
+server = http.createServer(app);
+io.attach(server, {
+  cors: {
+    origin: "*",
+  }
 });
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(PORT);
+// const server = app.listen(PORT, () => {
+//   console.log(`App running at ${PORT}`);
+// });
 
 // Event to listen for handle any errors from out express
 // Handle rejections outside express

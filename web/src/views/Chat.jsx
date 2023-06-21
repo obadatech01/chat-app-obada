@@ -1,6 +1,7 @@
 import React from 'react';
-import { Row } from 'reactstrap';
+import { Row, Spinner } from 'reactstrap';
 import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages } from 'components';
+import socketIO from 'socket.io-client';
 
 class Chat extends React.Component {
   state = {
@@ -21,11 +22,26 @@ class Chat extends React.Component {
     ],
   }
 
+  componentDidMount() {
+    this.initSocketConnection();
+  }
+
+  initSocketConnection = () => {
+    let socket = socketIO('ws://localhost:8000');
+    socket.on('connect', () => this.setState({connected: true}));
+
+    socket.on('disconnect', () => this.setState({connected: false}));
+  }
+
   onChatNavigate = contact => {
     this.setState({contact})
   }
 
   render() {
+    if(!this.state.connected) {
+      return <Spinner id="loader" color="success">{""}</Spinner>
+    }
+
     return (
       <Row className="h-100">
         <div id="contacts-section" className="col-6 col-md-4" >
