@@ -39,14 +39,18 @@ class Chat extends React.Component {
     // Handle user disconnected event.
     socket.on('disconnect', () => this.setState({connected: false}));
     // Handle user data event (after connection).
-    socket.on('data', (user, contacts, messages) => {
+    socket.on('data', (user, contacts, messages, users) => {
       let contact = contacts[0] || {};
-      this.setState({messages, contacts, user, contact})
+      this.setState({messages, contacts, user, contact}, () => {
+        this.updateUsersState(users);
+      })
     });
     // Handle new user event.
     socket.on('new_user', this.onNewUser);
     // Handle incoming message event.
     socket.on('message', this.onNewMessage);
+    // Handle changes for user presence.
+    socket.on('user_status', this.updateUsersState);
     // Handle socket.io errors.
     socket.on('error', err => {
       // If authentication error then logout.
@@ -94,6 +98,21 @@ class Chat extends React.Component {
 
     this.state.socket.emit('message', message);
   }
+
+  /**
+     * update users statuses.
+     * @param users
+     */
+  updateUsersState = users => {
+    let contacts = this.state.contacts;
+    contacts.forEach((element, index) => {
+        if(users[element.id]) contacts[index].status = users[element.id];
+    });
+    this.setState({contacts});
+    let contact = this.state.contact;
+    if(users[contact.id]) contact.status = users[contact.id];
+    this.setState({contact});
+  };
 
   onChatNavigate = contact => {
     this.setState({contact})
