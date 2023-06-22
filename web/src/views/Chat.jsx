@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Spinner } from 'reactstrap';
 import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages } from 'components';
 import socketIO from 'socket.io-client';
+import Auth from 'Auth';
 
 class Chat extends React.Component {
   state = {
@@ -27,10 +28,16 @@ class Chat extends React.Component {
   }
 
   initSocketConnection = () => {
-    let socket = socketIO('ws://localhost:8000');
+    // Connect to server and send user token.
+    let socket = socketIO(process.env.REACT_APP_SOCKET, {
+      query: 'token=' + Auth.getToken(),
+    });
+    console.log(socket);
+    // Handle user connected event.
     socket.on('connect', () => this.setState({connected: true}));
-
+    // Handle user disconnected event.
     socket.on('disconnect', () => this.setState({connected: false}));
+
   }
 
   onChatNavigate = contact => {
