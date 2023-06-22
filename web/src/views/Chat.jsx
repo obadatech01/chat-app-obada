@@ -37,7 +37,14 @@ class Chat extends React.Component {
     socket.on('connect', () => this.setState({connected: true}));
     // Handle user disconnected event.
     socket.on('disconnect', () => this.setState({connected: false}));
-
+    // Handle socket.io errors.
+    socket.on('error', err => {
+      // If authentication error then logout.
+      if(err === 'auth_error'){
+        Auth.logout();
+        this.props.history.push('/login');
+      }
+    })
   }
 
   onChatNavigate = contact => {
