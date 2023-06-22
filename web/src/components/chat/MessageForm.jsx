@@ -15,7 +15,17 @@ export default class MessageForm extends Component {
   * Send message.
   * @param e
   */
-  onSend = e => this.setState({message: ''});
+  onSend = e => {
+    if(!this.state.message) return;
+
+    let message = {
+      content: this.state.message,
+      date: new Date().getTime(),
+    }
+    
+    this.props.sender(message);
+    this.setState({message: ''})
+  };
 
   /**
   * Render component.

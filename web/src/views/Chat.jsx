@@ -33,7 +33,7 @@ class Chat extends React.Component {
     let socket = socketIO(process.env.REACT_APP_SOCKET, {
       query: 'token=' + Auth.getToken(),
     });
-    console.log(socket);
+    // console.log(socket);
     // Handle user connected event.
     socket.on('connect', () => this.setState({connected: true}));
     // Handle user disconnected event.
@@ -45,6 +45,8 @@ class Chat extends React.Component {
     });
     // Handle new user event.
     socket.on('new_user', this.onNewUser);
+    // Handle incoming message event.
+    socket.on('message', this.onNewMessage);
     // Handle socket.io errors.
     socket.on('error', err => {
       // If authentication error then logout.
@@ -53,12 +55,44 @@ class Chat extends React.Component {
         this.props.history.push('/login');
       }
     })
+
+    this.setState({socket});
   }
 
+  /**
+  * Handle new user event.
+  * @param user
+  */
   onNewUser = user => {
     // Add user to contacts list.
     let contacts = this.state.contacts.concat(user);
     this.setState({contacts});
+  }
+
+  /**
+  * Handle incoming message event.
+  * @param message
+  */
+  onNewMessage = message => {
+    // Add message to messages list.
+    let messages = this.state.messages.concat(message);
+    this.setState({messages});
+  }
+
+  /**
+  * Send message.
+  * @param message
+  */
+  sendMessage = message => {
+    if(!this.state.concat.id) return;
+
+    message.receiver = this.state.concat.id;
+
+    let messages = this.state.messages.concat(message);
+
+    this.setState({messages});
+
+    this.state.socket.emit('message', message);
   }
 
   onChatNavigate = contact => {
@@ -81,7 +115,7 @@ class Chat extends React.Component {
         <div id="messages-section" className="col-6 col-md-8" >
           <ChatHeader contact={this.state.contact} />
           {this.renderChat()}
-          <MessageForm />
+          <MessageForm sender={this.sendMessage} />
         </div>
       </Row>
     );

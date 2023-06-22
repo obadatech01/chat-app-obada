@@ -10,9 +10,22 @@ const User = require('./models/userModel');
 io.use(auth.socket);
 
 io.on('connection', socket => {
+  socket.join(socket.user.id);
+  socket.on('message', data => onMessage(socket, data))
   console.log('New client connected: '+socket.id);
   initialData(socket);
 });
+
+const onMessage = (socket, data) => {
+  let sender = socket.user.id;
+  let receiver = data.receiver;
+  let message = {
+    sender: sender, receiver: receiver, content: data.content, data: new Date().getTime()
+  }
+
+  Message.create(message);
+  socket.to(sender).to(receiver).emit('message', message);
+}
 
 const getMessages = userId => {
   let where = [
