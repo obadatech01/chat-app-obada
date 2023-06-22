@@ -82,13 +82,24 @@ const onMessage = (socket, data) => {
   socket.to(receiver).to(sender).emit('message', message);
 };
 
-const getMessages = userId => {
-  let where = [
-    {sender: userId}, {receiver: userId}
-  ]
+// const getMessages = userId => {
+//   console.log(userId);
+//   let where = [
+//     {sender: userId}, {receiver: userId}
+//   ];
 
-  return Message.find().or(where);
-}
+//   return Message.find().or(where);
+// }
+
+// const getMessages = userId => {
+//   return Message.find({ $or: [{ sender: userId }, { receiver: userId }] });
+// }
+
+const getMessages = async (userId) => {
+  const messages = await Message.find({ $or: [{ sender: userId }, { receiver: userId }] });
+  return messages;
+};
+
 
 const getUsers = userId => {
   let where = {_id: { $ne: userId } }
@@ -101,11 +112,11 @@ const initialData = socket => {
   let messages = [];
   getMessages(user.id)
   .then(data => {
-    messages = data;
-    return getUsers(user.id);
+      messages = data;
+      return getUsers(user.id);
   })
   .then(contacts => {
-    socket.emit('data', user, contacts, messages, users);
+      socket.emit('data', user, contacts, messages, users);
   })
   .catch(() => socket.disconnect());
 };
