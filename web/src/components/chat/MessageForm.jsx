@@ -22,7 +22,7 @@ export default class MessageForm extends Component {
       content: this.state.message,
       date: new Date().getTime(),
     }
-    
+
     this.props.sender(message);
     this.setState({message: ''})
   };

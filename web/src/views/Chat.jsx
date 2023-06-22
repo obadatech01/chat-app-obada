@@ -84,9 +84,9 @@ class Chat extends React.Component {
   * @param message
   */
   sendMessage = message => {
-    if(!this.state.concat.id) return;
+    if(!this.state.contact._id) return;
 
-    message.receiver = this.state.concat.id;
+    message.receiver = this.state.contact._id;
 
     let messages = this.state.messages.concat(message);
 
@@ -128,7 +128,7 @@ class Chat extends React.Component {
     const { contact, user } = this.state;
     if(!contact) return;
     // Show only related messages.
-    let messages = this.state.messages.filter(e => e.sender === contact.id || e.receiver === contact.id);
+    let messages = this.state.messages.filter(e => e.sender === contact._id || e.receiver === contact._id);
     return <Messages user={user} messages={messages} />
 };
 }
