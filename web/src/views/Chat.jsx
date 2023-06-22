@@ -5,7 +5,12 @@ import socketIO from 'socket.io-client';
 import Auth from 'Auth';
 
 class Chat extends React.Component {
-  state = {}
+  state = {
+    contacts: [],
+    contact: {},
+    userProfile: false,
+    profile: false,
+  };
   // state = {
   //   user : { id: "1", name: "عمر" },
   //   contact : { id: "2", name: "علي" },
@@ -43,7 +48,7 @@ class Chat extends React.Component {
       let contact = contacts[0] || {};
       this.setState({messages, contacts, user, contact}, () => {
         this.updateUsersState(users);
-      })
+      });
     });
     // Handle new user event.
     socket.on('new_user', this.onNewUser);
@@ -100,17 +105,18 @@ class Chat extends React.Component {
   }
 
   /**
-     * update users statuses.
-     * @param users
-     */
+   * update users statuses.
+   * @param users
+   */
   updateUsersState = users => {
     let contacts = this.state.contacts;
     contacts.forEach((element, index) => {
-        if(users[element.id]) contacts[index].status = users[element.id];
+      if(users[element._id]) contacts[index].status = users[element._id];
     });
     this.setState({contacts});
     let contact = this.state.contact;
-    if(users[contact.id]) contact.status = users[contact.id];
+    // console.log(contact);
+    if(users[contact._id]) contact.status = users[contact._id];
     this.setState({contact});
   };
 

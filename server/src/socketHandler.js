@@ -62,16 +62,25 @@ const onSocketDisconnected = socket => {
     console.log('Client disconnected: ' + socket.user.username);
 };
 
+/**
+ * Handle user-to-user message event.
+ * @param socket
+ * @param data
+ */
 const onMessage = (socket, data) => {
+  // Get sender id.
   let sender = socket.user.id;
+  // Get receiver id.
   let receiver = data.receiver;
+  // Make message object.
   let message = {
-    sender: sender, receiver: receiver, content: data.content, data: new Date().getTime()
-  }
-
+      sender: sender, receiver: receiver, content: data.content, date: new Date().getTime()
+  };
+  // Add message to database.
   Message.create(message);
-  socket.to(sender).to(receiver).emit('message', message);
-}
+  // Send message to receiver and sender applications (browsers or windows).
+  socket.to(receiver).to(sender).emit('message', message);
+};
 
 const getMessages = userId => {
   let where = [
@@ -96,7 +105,7 @@ const initialData = socket => {
     return getUsers(user.id);
   })
   .then(contacts => {
-    socket.emit('data', user, contacts, messages);
+    socket.emit('data', user, contacts, messages, users);
   })
   .catch(() => socket.disconnect());
 };

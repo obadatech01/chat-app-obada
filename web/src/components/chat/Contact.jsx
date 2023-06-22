@@ -7,8 +7,8 @@ const Contact = (props) => {
     <div className='contact'>
       <div>
         <Avatar src={props.contact.avatar} />
-
-        {props.contact.status === true ? <i className='fa fa-circle online' /> : ''}
+        {props.contact.status === true ? <i className='fa fa-circle text-success' /> : ''}
+        {/* {props.contact.status === true ? <i className='fa fa-circle online' /> : ''} */}
       </div>
 
       <div className="w-50">
