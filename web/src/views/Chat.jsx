@@ -5,23 +5,24 @@ import socketIO from 'socket.io-client';
 import Auth from 'Auth';
 
 class Chat extends React.Component {
-  state = {
-    user : { id: "1", name: "عمر" },
-    contact : { id: "2", name: "علي" },
-    contacts : [
-      { id: "2", name: "علي" },
-      { id: "3", name: "أحمد" },
-    ],
-     messages : [
-      { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
-      { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
-      { sender: "3", receiver: "1", content: "مرحبا كيف حالك" },
-      { sender: "1", receiver: "3", content: "مرحبا كيف حالك" },
-      { sender: "2", receiver: "2", content: "مرحبا كيف حالك" },
-      { sender: "3", receiver: "2", content: "مرحبا كيف حالك" },
-      { sender: "2", receiver: "1", content: "مرحبا كيف حالك" },
-    ],
-  }
+  state = {}
+  // state = {
+  //   user : { id: "1", name: "عمر" },
+  //   contact : { id: "2", name: "علي" },
+  //   contacts : [
+  //     { id: "2", name: "علي" },
+  //     { id: "3", name: "أحمد" },
+  //   ],
+  //    messages : [
+  //     { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
+  //     { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
+  //     { sender: "3", receiver: "1", content: "مرحبا كيف حالك" },
+  //     { sender: "1", receiver: "3", content: "مرحبا كيف حالك" },
+  //     { sender: "2", receiver: "2", content: "مرحبا كيف حالك" },
+  //     { sender: "3", receiver: "2", content: "مرحبا كيف حالك" },
+  //     { sender: "2", receiver: "1", content: "مرحبا كيف حالك" },
+  //   ],
+  // }
 
   componentDidMount() {
     this.initSocketConnection();
@@ -37,6 +38,13 @@ class Chat extends React.Component {
     socket.on('connect', () => this.setState({connected: true}));
     // Handle user disconnected event.
     socket.on('disconnect', () => this.setState({connected: false}));
+    // Handle user data event (after connection).
+    socket.on('data', (user, contacts, messages) => {
+      let contact = contacts[0] || {};
+      this.setState({messages, contacts, user, contact})
+    });
+    // Handle new user event.
+    socket.on('new_user', this.onNewUser);
     // Handle socket.io errors.
     socket.on('error', err => {
       // If authentication error then logout.
@@ -47,12 +55,19 @@ class Chat extends React.Component {
     })
   }
 
+  onNewUser = user => {
+    // Add user to contacts list.
+    let contacts = this.state.contacts.concat(user);
+    this.setState({contacts});
+  }
+
   onChatNavigate = contact => {
     this.setState({contact})
   }
 
   render() {
-    if(!this.state.connected) {
+    // If socket.io client not connected show loading spinner.
+    if(!this.state.connected || !this.state.contacts || !this.state.messages){
       return <Spinner id="loader" color="success">{""}</Spinner>
     }
 

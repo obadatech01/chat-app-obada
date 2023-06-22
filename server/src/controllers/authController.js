@@ -22,6 +22,8 @@ exports.signup = asyncHandler(async (req, res, next) => {
   const token = createToken(user._id);
 
   res.status(201).json({data: user, token});
+  // Broadcast created user profile to users.
+  sendNewUser(user);
 });
 
 // @desc Login
@@ -40,3 +42,13 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 4) send response to client side
   res.status(200).json({data: user, token});
 });
+
+/**
+ * Broadcast created user profile to users.
+ * @param user
+ */
+const sendNewUser = user => {
+  // let data = { name, username, avatar } = user;
+  let data = user;
+  io.emit('new_user', data);
+};
