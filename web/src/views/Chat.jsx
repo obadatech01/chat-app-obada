@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Spinner } from 'reactstrap';
-import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages, UserProfile } from 'components';
+import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages, UserProfile, EditProfile } from 'components';
 import socketIO from 'socket.io-client';
 import Auth from 'Auth';
 
@@ -35,6 +35,8 @@ class Chat extends React.Component {
     });
     // Handle new user event.
     socket.on('new_user', this.onNewUser);
+    // Handle update user event.
+    socket.on('update_user', this.onUpdateUser);
     // Handle incoming message event.
     socket.on('message', this.onNewMessage);
     // Handle changes for user presence.
@@ -62,6 +64,29 @@ class Chat extends React.Component {
     let contacts = this.state.contacts.concat(user);
     this.setState({contacts});
   }
+
+  /**
+   * Handle update user event.
+   * @param user
+   */
+  onUpdateUser = user => {
+    // Add updated user is the current user then update local storage data.
+    if (this.state.user._id === user._id) {
+        this.setState({user});
+        Auth.setUser(user);
+        return;
+    }
+    // Update contact data.
+    let contacts = this.state.contacts;
+    contacts.forEach((element, index) => {
+        if(element._id === user._id) {
+            contacts[index] = user;
+            contacts[index].status = element.status;
+        }
+    });
+    this.setState({contacts});
+    if (this.state.contact._id === user._id) this.setState({contact: user});
+  };
 
   /**
   * Handle incoming message event.
@@ -172,9 +197,10 @@ class Chat extends React.Component {
     return (
       <Row className="h-100">
         <div id="contacts-section" className="col-6 col-md-4" >
-          <ContactHeader />
+          <ContactHeader user={this.state.user} toggle={this.profileToggle} />
           <Contacts contacts={this.state.contacts} messages={this.state.messages} onChatNavigate={this.onChatNavigate} />
           <UserProfile contact={this.state.contact} toggle={this.userProfileToggle} open={this.state.userProfile} />
+          <EditProfile user={this.state.user} toggle={this.profileToggle} open={this.state.profile} />
         </div>
 
         <div id="messages-section" className="col-6 col-md-8" >

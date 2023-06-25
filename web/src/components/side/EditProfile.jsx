@@ -3,6 +3,7 @@ import { Row, Form, Input, Button } from "reactstrap";
 import Error from "components/Error";
 import Avatar from "components/Avatar";
 import axios from "axios";
+import Auth from "Auth";
 
 /**
  * EditProfile Component.
@@ -55,8 +56,16 @@ class EditProfile extends React.Component {
     data.append("about", this.state.about);
     if (this.state.avatar)
       data.append("avatar", this.state.avatar, this.state.avatar.name);
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${Auth.getToken()}`,
+      },
+    };
+
     axios
-      .post("/api/account", data)
+      .post("/api/v1/auth/profile", data, config)
       .then(this.props.toggle)
       .catch((err) =>
         this.setState({

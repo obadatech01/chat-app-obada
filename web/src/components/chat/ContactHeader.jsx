@@ -7,7 +7,7 @@ import { Row } from "reactstrap";
  */
 const ContactHeader = props => (
    <Row className="heading">
-       <Avatar />
+       <Avatar src={props.user.avatar} />
        <div>جهات الاتصال</div>
        <div className="mr-auto nav-link" onClick={props.toggle}>
             <i className="fa fa-bars" />

@@ -53,6 +53,23 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+/**
+ * Get user profile data.
+ */
+userSchema.methods.getData = function(){
+  return {
+      _id: this._id,
+      name: this.name,
+      username: this.username,
+      about: this.about,
+      avatar: this.avatar
+  };
+};
+
+userSchema.methods.checkPassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

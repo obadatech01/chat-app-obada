@@ -52,3 +52,31 @@ const sendNewUser = user => {
   let data = user;
   io.emit('new_user', data);
 };
+
+// @desc Update profile
+// @route post /api/v1/auth/profile
+// @access Protected
+exports.profile = asyncHandler(async (req, res, next) => {
+  // Get user from request
+  const user = req.user;
+
+  // Update user data
+  user.name = req.body.name;
+  user.about = req.body.about;
+  user.avatar = req.file ? req.file.filename : user.avatar;
+  user.save()
+  .then(updated => {
+      // Broadcast the profile changes to users.
+      sendUpdateUser(updated);
+      res.json();
+  })
+  .catch(next);
+});
+
+/**
+ * Broadcast the profile changes to users.
+ * @param user
+ */
+const sendUpdateUser = (user) => {
+  io.emit('update_user', user.getData());
+};
