@@ -116,13 +116,15 @@ a {
 	margin: .25rem 1rem !important;
 	box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
 	border-radius: .25rem!important;
-	background: #FFF;
+	/* background: #FFF; */
+	background: #dcf8c6;
 	align-self: flex-start!important;
 	text-align: right;
 }
 
 .message-item.incoming {
-	background: #dcf8c6!important;
+	/* background: #dcf8c6!important; */
+	background: #FFF;
 	align-self: flex-end!important;
 }
 

@@ -92,7 +92,7 @@ const onMessage = (socket, data) => {
  */
 const onTyping = (socket, receiver) => {
 console.log("onTyping");
-  let sender = socket.user.id;  
+  let sender = socket.user.id;
   socket.to(receiver).emit('typing', sender);
 };
 

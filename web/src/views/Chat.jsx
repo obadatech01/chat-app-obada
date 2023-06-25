@@ -71,7 +71,7 @@ class Chat extends React.Component {
    */
   onUpdateUser = user => {
     // Add updated user is the current user then update local storage data.
-    if (this.state.user._id === user._id) {
+    if (String(this.state.user?._id) === String(user?._id)) {
         this.setState({user});
         Auth.setUser(user);
         return;
@@ -79,13 +79,13 @@ class Chat extends React.Component {
     // Update contact data.
     let contacts = this.state.contacts;
     contacts.forEach((element, index) => {
-        if(element._id === user._id) {
+        if(String(element._id) === String(user?._id)) {
             contacts[index] = user;
             contacts[index].status = element.status;
         }
     });
     this.setState({contacts});
-    if (this.state.contact._id === user._id) this.setState({contact: user});
+    if (String(this.state.contact?._id) === String(user?._id)) this.setState({contact: user});
   };
 
   /**
@@ -94,9 +94,9 @@ class Chat extends React.Component {
   */
   onNewMessage = message => {
      // If user is already in chat then mark the message as seen.
-     if(message.sender._id === this.state.contact._id){
+     if(String(message.sender?._id) === String(this.state.contact?._id)){
       this.setState({typing: false});
-      this.state.socket.emit('seen', this.state.contact._id);
+      this.state.socket.emit('seen', String(this.state.contact?._id));
       message.seen = true;
     }
     // Add message to messages list.
@@ -110,7 +110,7 @@ class Chat extends React.Component {
    */
   onTypingMessage = sender => {
       // If the typer not the current chat user then ignore it.
-      if(this.state.contact._id !== sender) return;
+      if(String(this.state.contact?._id) !== sender) return;
       // Set typer.
       this.setState({typing: sender});
       // Create timeout function to remove typing status after 3 seconds.
@@ -129,9 +129,9 @@ class Chat extends React.Component {
   * @param message
   */
   sendMessage = message => {
-    if(!this.state.contact._id) return;
+    if(!String(this.state.contact?._id)) return;
 
-    message.receiver = this.state.contact._id;
+    message.receiver = String(this.state.contact?._id);
 
     let messages = this.state.messages.concat(message);
 
@@ -143,7 +143,7 @@ class Chat extends React.Component {
   /**
      * Send typing(composing) message.
      */
-  sendType = () => this.state.socket.emit('typing', this.state.contact._id);
+  sendType = () => this.state.socket.emit('typing', String(this.state.contact?._id));
 
 
   /**
@@ -158,7 +158,7 @@ class Chat extends React.Component {
     this.setState({contacts});
     let contact = this.state.contact;
     // console.log(contact);
-    if(users[contact._id]) contact.status = users[contact._id];
+    if(users[String(contact?._id)]) contact.status = users[String(contact?._id)];
     this.setState({contact});
   };
 
@@ -170,10 +170,10 @@ class Chat extends React.Component {
     // Set current chat contact.
     this.setState({contact});
     // Mark unseen messages as seen.
-    this.state.socket.emit('seen', contact._id);
+    this.state.socket.emit('seen', String(contact?._id));
     let messages = this.state.messages;
     messages.forEach((element, index) => {
-        if(element.sender._id === contact._id) messages[index].seen = true;
+        if(String(element.sender?._id) === String(contact?._id)) messages[index].seen = true;
     });
     this.setState({messages});
   }
@@ -218,8 +218,9 @@ class Chat extends React.Component {
   renderChat = () => {
     const { contact, user } = this.state;
     if(!contact) return;
+    
     // Show only related messages.
-    let messages = this.state.messages.filter(e => e.sender._id === contact._id || e.receiver._id === contact._id);
+    let messages = this.state.messages.filter(e => String(e.sender?._id) === String(contact?._id) || String(e.receiver?._id) === String(contact?._id));
     return <Messages user={user} messages={messages} />
 };
 }
