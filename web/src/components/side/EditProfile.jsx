@@ -31,7 +31,6 @@ class EditProfile extends React.Component {
    */
   onImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      // console.log(URL.createObjectURL(e.target.files[0]));
       this.setState({
         image: URL.createObjectURL(e.target.files[0]),
         avatar: e.target.files[0],
