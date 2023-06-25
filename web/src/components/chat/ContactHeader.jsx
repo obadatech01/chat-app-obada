@@ -10,7 +10,7 @@ const ContactHeader = props => (
        <Avatar src={props.user.avatar} />
        <div>جهات الاتصال</div>
        <div className="mr-auto nav-link" onClick={props.toggle}>
-            <i className="fa fa-bars" />
+            <i className="fa fa-cog" />
        </div>
    </Row>
 );
