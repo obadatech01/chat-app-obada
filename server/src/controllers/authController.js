@@ -63,7 +63,7 @@ exports.profile = asyncHandler(async (req, res, next) => {
   // Update user data
   user.name = req.body.name;
   user.about = req.body.about;
-  user.avatar = req.file ? req.file.filename : user.avatar;
+  user.avatar = (req.file || req.file.location) ? req.file.location : user.avatar;
   user.save()
   .then(updated => {
       // Broadcast the profile changes to users.
