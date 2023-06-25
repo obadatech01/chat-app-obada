@@ -20,6 +20,8 @@ io.on('connection', socket => {
   socket.on('message', data => onMessage(socket, data));
   // Handle typing message event.
   socket.on('typing', receiver => onTyping(socket, receiver));
+  // Handle message seen event.
+  socket.on('seen', sender => onSeen(socket, sender));
   initialData(socket);
   // Handle Socket disconnect event.
   socket.on('disconnect', () => onSocketDisconnected(socket));
@@ -89,22 +91,21 @@ const onMessage = (socket, data) => {
  * @param receiver
  */
 const onTyping = (socket, receiver) => {
-    let sender = socket.user.id;
-    socket.to(receiver).emit('typing', sender);
+console.log("onTyping");
+  let sender = socket.user.id;  
+  socket.to(receiver).emit('typing', sender);
 };
 
-// const getMessages = userId => {
-//   console.log(userId);
-//   let where = [
-//     {sender: userId}, {receiver: userId}
-//   ];
-
-//   return Message.find().or(where);
-// }
-
-// const getMessages = userId => {
-//   return Message.find({ $or: [{ sender: userId }, { receiver: userId }] });
-// }
+/**
+ * Handle message seen event.
+ * @param socket
+ * @param sender
+ */
+const onSeen = (socket, sender) => {
+  let receiver = socket.user.id;
+  console.log({sender, receiver, seen: false});
+  Message.updateMany({sender, receiver, seen: false}, {seen: true}, {multi: true}).exec();
+};
 
 const getMessages = async (userId) => {
   const messages = await Message.find({ $or: [{ sender: userId }, { receiver: userId }] });
@@ -123,11 +124,11 @@ const initialData = socket => {
   let messages = [];
   getMessages(user.id)
   .then(data => {
-      messages = data;
-      return getUsers(user.id);
+    messages = data;
+    return getUsers(user.id);
   })
   .then(contacts => {
-      socket.emit('data', user, contacts, messages, users);
+    socket.emit('data', user, contacts, messages, users);
   })
   .catch(() => socket.disconnect());
 };

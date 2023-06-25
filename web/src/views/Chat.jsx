@@ -88,8 +88,8 @@ class Chat extends React.Component {
      // If user is already in chat then mark the message as seen.
      if(message.sender._id === this.state.contact._id){
       this.setState({typing: false});
-      // this.state.socket.emit('seen', this.state.contact.id);
-      // message.seen = true;
+      this.state.socket.emit('seen', this.state.contact._id);
+      message.seen = true;
     }
     // Add message to messages list.
     let messages = this.state.messages.concat(message);
@@ -154,8 +154,20 @@ class Chat extends React.Component {
     this.setState({contact});
   };
 
+  /**
+   * Handle navigation between chats.
+   * @param contact
+   */
   onChatNavigate = contact => {
-    this.setState({contact})
+    // Set current chat contact.
+    this.setState({contact});
+    // Mark unseen messages as seen.
+    this.state.socket.emit('seen', contact._id);
+    let messages = this.state.messages;
+    messages.forEach((element, index) => {
+        if(element.sender._id === contact._id) messages[index].seen = true;
+    });
+    this.setState({messages});
   }
 
   render() {
