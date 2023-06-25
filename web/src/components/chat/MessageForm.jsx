@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { Component } from 'react'
 import { Input } from 'reactstrap';
 
@@ -28,12 +29,27 @@ export default class MessageForm extends Component {
   };
 
   /**
+   * Handle OnKeyDown event.
+   * @param e
+   */
+  onKeyDown = e => {
+    if(e.key === 'Enter' && !e.shiftKey){
+      this.setState({lastType: false});
+      this.onSend();
+      e.preventDefault();
+    } else if (!this.state.lastType || moment() - this.state.lastType > 2000){
+      this.setState({lastType: moment()});
+      this.props.sendType();
+    }
+  };
+
+  /**
   * Render component.
   */
   render() {
     return (
         <div id="send-message">
-            <Input type="textarea" rows="3" onChange={this.onChange} value={this.state.message} placeholder="اكتب رسالتك هنا"/>
+            <Input type="textarea" rows="3" onChange={this.onChange} onKeyDown={this.onKeyDown} value={this.state.message} placeholder="اكتب رسالتك هنا"/>
             <i className="fa fa-send text-muted px-3 send" onClick={this.onSend}/>
         </div>
     );

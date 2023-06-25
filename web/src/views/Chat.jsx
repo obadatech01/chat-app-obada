@@ -56,6 +56,8 @@ class Chat extends React.Component {
     socket.on('message', this.onNewMessage);
     // Handle changes for user presence.
     socket.on('user_status', this.updateUsersState);
+    // Handle typing or composing event.
+    socket.on('typing', this.onTypingMessage);
     // Handle socket.io errors.
     socket.on('error', err => {
       // If authentication error then logout.
@@ -83,10 +85,36 @@ class Chat extends React.Component {
   * @param message
   */
   onNewMessage = message => {
+     // If user is already in chat then mark the message as seen.
+     if(message.sender._id === this.state.contact._id){
+      this.setState({typing: false});
+      // this.state.socket.emit('seen', this.state.contact.id);
+      // message.seen = true;
+    }
     // Add message to messages list.
     let messages = this.state.messages.concat(message);
     this.setState({messages});
   }
+
+  /**
+   * Handle typing or composing event.
+   * @param sender
+   */
+  onTypingMessage = sender => {
+      // If the typer not the current chat user then ignore it.
+      if(this.state.contact._id !== sender) return;
+      // Set typer.
+      this.setState({typing: sender});
+      // Create timeout function to remove typing status after 3 seconds.
+      clearTimeout(this.state.timeout);
+      const timeout = setTimeout(this.typingTimeout, 3000);
+      this.setState({timeout});
+  };
+
+  /**
+   * Clear typing status.
+   */
+  typingTimeout = () => this.setState({typing: false});
 
   /**
   * Send message.
@@ -103,6 +131,12 @@ class Chat extends React.Component {
 
     this.state.socket.emit('message', message);
   }
+
+  /**
+     * Send typing(composing) message.
+     */
+  sendType = () => this.state.socket.emit('typing', this.state.contact._id);
+
 
   /**
    * update users statuses.
@@ -138,9 +172,9 @@ class Chat extends React.Component {
         </div>
 
         <div id="messages-section" className="col-6 col-md-8" >
-          <ChatHeader contact={this.state.contact} />
+          <ChatHeader contact={this.state.contact} typing={this.state.typing} />
           {this.renderChat()}
-          <MessageForm sender={this.sendMessage} />
+          <MessageForm sender={this.sendMessage} sendType={this.sendType} />
         </div>
       </Row>
     );
@@ -153,7 +187,7 @@ class Chat extends React.Component {
     const { contact, user } = this.state;
     if(!contact) return;
     // Show only related messages.
-    let messages = this.state.messages.filter(e => e.sender?._id === contact?._id || e.receiver?._id === contact?._id);
+    let messages = this.state.messages.filter(e => e.sender._id === contact._id || e.receiver._id === contact._id);
     return <Messages user={user} messages={messages} />
 };
 }

@@ -18,7 +18,8 @@ io.on('connection', socket => {
   onSocketConnected(socket);
   // Handle user-to-user message.
   socket.on('message', data => onMessage(socket, data));
-  console.log('New client connected: '+socket.id);
+  // Handle typing message event.
+  socket.on('typing', receiver => onTyping(socket, receiver));
   initialData(socket);
   // Handle Socket disconnect event.
   socket.on('disconnect', () => onSocketDisconnected(socket));
@@ -80,6 +81,16 @@ const onMessage = (socket, data) => {
   Message.create(message);
   // Send message to receiver and sender applications (browsers or windows).
   socket.to(receiver).to(sender).emit('message', message);
+};
+
+/**
+ * Handle typing message event.
+ * @param socket
+ * @param receiver
+ */
+const onTyping = (socket, receiver) => {
+    let sender = socket.user.id;
+    socket.to(receiver).emit('typing', sender);
 };
 
 // const getMessages = userId => {
