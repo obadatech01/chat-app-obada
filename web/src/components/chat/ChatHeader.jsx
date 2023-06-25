@@ -39,7 +39,9 @@ const ChatHeader = (props) => {
 						<i className="fa fa-ellipsis-v" />
 					</DropdownToggle>
 					<DropdownMenu>
-						<DropdownItem onClick={logout}>تسجيل الخروج</DropdownItem>
+						<DropdownItem onClick={e => {window.location.href = "/password"}}>تغيير كلمة المرور</DropdownItem>
+						<DropdownItem divider />
+            <DropdownItem onClick={logout}>تسجيل الخروج</DropdownItem>
 					</DropdownMenu>
 				</UncontrolledDropdown>
 			</Nav>

@@ -34,7 +34,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 2) check if user exists & password is correct
   const user = await User.findOne({ email: req.body.user }) ||  await User.findOne({ username: req.body.user });
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    return next(new ApiError('Incorrect email or password!', 401))
+    return next(new ApiError('المستخدم أو كلمة مرورغير صحيحة!', 401))
   }
   // 3) generate token
   const token = createToken(user._id);
@@ -79,4 +79,25 @@ exports.profile = asyncHandler(async (req, res, next) => {
  */
 const sendUpdateUser = (user) => {
   io.emit('update_user', user.getData());
+};
+
+/**
+ * Change user password
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.password = async (req, res, next) => {
+  // Get old and new password from request.
+  const { password, newPassword} = req.body;
+  let user = req.user;
+  // Check if password is wrong then create error.
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return next(new ApiError('كلمة مرور غير صحيحة!', 401))
+  }
+
+  // Update password.
+  user.password = newPassword;
+  user.save().then(updated => res.json())
+  .catch(next);
 };

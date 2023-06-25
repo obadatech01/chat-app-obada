@@ -1,7 +1,7 @@
 import Auth from "./Auth.js";
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Login, NotFound, Register } from "./views/index.js";
+import { Login, NotFound, Register, Password } from "./views/index.js";
 import Chat from "views/Chat.jsx";
 
 function App() {
@@ -14,10 +14,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={Auth.guest() ? <Login /> : <Chat />} />
+          <Route path="/password" element={Auth.guest() ? <Login /> : <Password />} />
           {Auth.guest() && (
             <>
-              <Route exact path="/register" element={<Register />} />
-              <Route exact path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
             </>
           )}
 
