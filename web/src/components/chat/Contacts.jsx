@@ -27,7 +27,7 @@ export default class Contacts extends React.Component {
     if(!contact.name.includes(this.state.search)) return;
     if(!contact) return;
     // Show only related messages.
-    let messages = this.props.messages.filter(e => e.sender === contact.id || e.receiver === contact.id);
+    let messages = this.props.messages.filter(e => e.sender._id === contact._id || e.receiver._id === contact._id);
 
     let lastMessage = messages[messages.length-1];
 

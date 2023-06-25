@@ -153,7 +153,7 @@ class Chat extends React.Component {
     const { contact, user } = this.state;
     if(!contact) return;
     // Show only related messages.
-    let messages = this.state.messages.filter(e => e.sender === contact._id || e.receiver === contact._id);
+    let messages = this.state.messages.filter(e => e.sender?._id === contact?._id || e.receiver?._id === contact?._id);
     return <Messages user={user} messages={messages} />
 };
 }
