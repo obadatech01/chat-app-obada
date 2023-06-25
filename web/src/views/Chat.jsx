@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Spinner } from 'reactstrap';
-import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages } from 'components';
+import { ChatHeader, ContactHeader, Contacts, MessageForm, Messages, UserProfile } from 'components';
 import socketIO from 'socket.io-client';
 import Auth from 'Auth';
 
@@ -11,23 +11,6 @@ class Chat extends React.Component {
     userProfile: false,
     profile: false,
   };
-  // state = {
-  //   user : { id: "1", name: "عمر" },
-  //   contact : { id: "2", name: "علي" },
-  //   contacts : [
-  //     { id: "2", name: "علي" },
-  //     { id: "3", name: "أحمد" },
-  //   ],
-  //    messages : [
-  //     { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
-  //     { sender: "1", receiver: "2", content: "مرحبا كيف حالك" },
-  //     { sender: "3", receiver: "1", content: "مرحبا كيف حالك" },
-  //     { sender: "1", receiver: "3", content: "مرحبا كيف حالك" },
-  //     { sender: "2", receiver: "2", content: "مرحبا كيف حالك" },
-  //     { sender: "3", receiver: "2", content: "مرحبا كيف حالك" },
-  //     { sender: "2", receiver: "1", content: "مرحبا كيف حالك" },
-  //   ],
-  // }
 
   componentDidMount() {
     this.initSocketConnection();
@@ -170,6 +153,16 @@ class Chat extends React.Component {
     this.setState({messages});
   }
 
+  /**
+   * Toggle UserProfile component.
+   */
+  userProfileToggle = () => this.setState({userProfile: !this.state.userProfile});
+
+  /**
+   * Toggle EditProfile component.
+   */
+  profileToggle = () => this.setState({profile: !this.state.profile});
+
   render() {
     // If socket.io client not connected show loading spinner.
     if(!this.state.connected || !this.state.contacts || !this.state.messages){
@@ -181,10 +174,11 @@ class Chat extends React.Component {
         <div id="contacts-section" className="col-6 col-md-4" >
           <ContactHeader />
           <Contacts contacts={this.state.contacts} messages={this.state.messages} onChatNavigate={this.onChatNavigate} />
+          <UserProfile contact={this.state.contact} toggle={this.userProfileToggle} open={this.state.userProfile} />
         </div>
 
         <div id="messages-section" className="col-6 col-md-8" >
-          <ChatHeader contact={this.state.contact} typing={this.state.typing} />
+          <ChatHeader contact={this.state.contact} typing={this.state.typing} toggle={this.userProfileToggle} />
           {this.renderChat()}
           <MessageForm sender={this.sendMessage} sendType={this.sendType} />
         </div>

@@ -25,7 +25,9 @@ const ChatHeader = (props) => {
   return (
     <Row className="heading m-0 justify-content-sm-between flex-nowrap">
       <div className="w-auto d-flex align align-items-center">
-				<Avatar src={props.contact.avatar} />
+        <div onClick={props.toggle}>
+          <Avatar src={props.contact.avatar} />
+        </div>
 				<div className="text-right p-3">
 					<div>{props.contact ? props.contact.name : ''}</div>
           <small>{status()}</small>

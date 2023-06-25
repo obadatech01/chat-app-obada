@@ -200,8 +200,8 @@ a {
 .online{
 	position: relative;
 	font-size: 10px;
-	right: -25px;
-	top: -20px;
+	right: 42px;
+	top: -50px;
 	color: #00ce00;
 	margin-left: -8px;
 }
@@ -228,7 +228,8 @@ a {
 	position: relative;
 	width: 200px !important;
 	height: 200px !important;
-	margin: 3rem auto !important;
+	margin: 3rem 1rem 3rem auto !important;
+	/* margin: 3rem auto !important; */
 }
 
 .auth{
