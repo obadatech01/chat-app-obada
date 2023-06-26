@@ -4,15 +4,15 @@
 ### - `MongoDB NoSQL`
 
 ## 02. Backend Tools:
-### - NodeJS
-### - ExpressJS
-### - AWS S3
-### - SocketIO Realtime
+### - `NodeJS`
+### - `ExpressJS`
+### - `AWS S3`
+### - `SocketIO Realtime`
 
 ## 03. Web Frontend Tools:
-### - ReactJS
-### - Reactstrap
-### - Bootstrap
-### - SocketIO Realtime
-### - Axios
-### - Moment
+### - `ReactJS`
+### - `Reactstrap`
+### - `Bootstrap`
+### - `SocketIO Realtime`
+### - `Axios`
+### - `Moment`
