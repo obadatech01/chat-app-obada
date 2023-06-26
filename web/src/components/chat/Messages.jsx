@@ -18,7 +18,7 @@ class Messages extends React.Component {
    }
 
    renderMessage = (message, index) => {
-       message.outgoing = String(message.receiver?._id) !== String(this.props.user?._id);
+       message.outgoing = String(message.receiver) !== String(this.props.user.id);
        return <Message key={index} message={message} />
    };
 }

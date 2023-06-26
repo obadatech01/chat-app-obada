@@ -91,7 +91,7 @@ const onMessage = (socket, data) => {
  * @param receiver
  */
 const onTyping = (socket, receiver) => {
-console.log("onTyping");
+  // console.log("onTyping");
   let sender = socket.user.id;
   socket.to(receiver).emit('typing', sender);
 };
@@ -103,7 +103,7 @@ console.log("onTyping");
  */
 const onSeen = (socket, sender) => {
   let receiver = socket.user.id;
-  console.log({sender, receiver, seen: false});
+  // console.log({sender, receiver, seen: false});
   Message.updateMany({sender, receiver, seen: false}, {seen: true}, {multi: true}).exec();
 };
 

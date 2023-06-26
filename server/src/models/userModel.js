@@ -58,13 +58,27 @@ userSchema.pre("save", async function (next) {
  */
 userSchema.methods.getData = function(){
   return {
-      _id: this._id,
+      id: this._id,
       name: this.name,
       username: this.username,
       about: this.about,
       avatar: this.avatar
   };
 };
+
+/**
+ * Append id attribute.
+ */
+userSchema.virtual('id').get(function(){
+  return this._id.toHexString();
+});
+
+/**
+* Enable virtual attributes (id).
+*/
+userSchema.set('toJSON', {
+  virtuals: true
+});
 
 const User = mongoose.model("User", userSchema);
 

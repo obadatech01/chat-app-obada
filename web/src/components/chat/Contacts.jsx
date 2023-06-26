@@ -27,11 +27,11 @@ export default class Contacts extends React.Component {
     if(!contact.name.includes(this.state.search)) return;
     if(!contact) return;
     // Show only related messages.
-    let messages = this.props.messages.filter(e => String(e.sender?._id) === String(contact?._id) || String(e.receiver?._id) === String(contact?._id));
+    let messages = this.props.messages.filter(e => String(e.sender) === String(contact.id) || String(e.receiver) === String(contact.id));
 
     let lastMessage = messages[messages.length-1];
 
-    let unseen = messages.filter(e => !e.seen && String(e.sender?._id) === String(contact?._id)).length;
+    let unseen = messages.filter(e => !e.seen && String(e.sender) === String(contact.id)).length;
 
     return (
       <div className='w-100' key={index} onClick={this.props.onChatNavigate.bind(this, contact)}>

@@ -29,16 +29,16 @@ const messageSchema = new mongoose.Schema(
 );
 
 // 3- Populate models
-messageSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: "sender",
-  });
-  this.populate({
-    path: "receiver",
-  });
+// messageSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: "sender",
+//   });
+//   this.populate({
+//     path: "receiver",
+//   });
 
-  next();
-});
+//   next();
+// });
 
 // 3- Create model
 const Message = mongoose.model("Message", messageSchema);

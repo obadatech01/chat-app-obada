@@ -19,7 +19,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
   });
 
   // 2- Generate token
-  const token = createToken(user._id);
+  const token = createToken(user.id);
 
   res.status(201).json({data: user, token});
   // Broadcast created user profile to users.
@@ -37,7 +37,7 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ApiError('المستخدم أو كلمة مرورغير صحيحة!', 401))
   }
   // 3) generate token
-  const token = createToken(user._id);
+  const token = createToken(user.id);
 
   // 4) send response to client side
   res.status(200).json({data: user, token});

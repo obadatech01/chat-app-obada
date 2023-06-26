@@ -71,7 +71,7 @@ class Chat extends React.Component {
    */
   onUpdateUser = user => {
     // Add updated user is the current user then update local storage data.
-    if (String(this.state.user?._id) === String(user?._id)) {
+    if (String(this.state.user.id) === String(user.id)) {
         this.setState({user});
         Auth.setUser(user);
         return;
@@ -79,13 +79,13 @@ class Chat extends React.Component {
     // Update contact data.
     let contacts = this.state.contacts;
     contacts.forEach((element, index) => {
-        if(String(element._id) === String(user?._id)) {
+        if(String(element._id) === String(user.id)) {
             contacts[index] = user;
             contacts[index].status = element.status;
         }
     });
     this.setState({contacts});
-    if (String(this.state.contact?._id) === String(user?._id)) this.setState({contact: user});
+    if (String(this.state.contact.id) === String(user.id)) this.setState({contact: user});
   };
 
   /**
@@ -94,9 +94,9 @@ class Chat extends React.Component {
   */
   onNewMessage = message => {
      // If user is already in chat then mark the message as seen.
-     if(String(message.sender?._id) === String(this.state.contact?._id)){
+     if(String(message.sender) === String(this.state.contact.id)){
       this.setState({typing: false});
-      this.state.socket.emit('seen', String(this.state.contact?._id));
+      this.state.socket.emit('seen', String(this.state.contact.id));
       message.seen = true;
     }
     // Add message to messages list.
@@ -110,7 +110,7 @@ class Chat extends React.Component {
    */
   onTypingMessage = sender => {
       // If the typer not the current chat user then ignore it.
-      if(String(this.state.contact?._id) !== sender) return;
+      if(String(this.state.contact.id) !== sender) return;
       // Set typer.
       this.setState({typing: sender});
       // Create timeout function to remove typing status after 3 seconds.
@@ -129,9 +129,9 @@ class Chat extends React.Component {
   * @param message
   */
   sendMessage = message => {
-    if(!String(this.state.contact?._id)) return;
+    if(!String(this.state.contact.id)) return;
 
-    message.receiver = String(this.state.contact?._id);
+    message.receiver = String(this.state.contact.id);
 
     let messages = this.state.messages.concat(message);
 
@@ -143,7 +143,7 @@ class Chat extends React.Component {
   /**
      * Send typing(composing) message.
      */
-  sendType = () => this.state.socket.emit('typing', String(this.state.contact?._id));
+  sendType = () => this.state.socket.emit('typing', String(this.state.contact.id));
 
 
   /**
@@ -158,7 +158,7 @@ class Chat extends React.Component {
     this.setState({contacts});
     let contact = this.state.contact;
     // console.log(contact);
-    if(users[String(contact?._id)]) contact.status = users[String(contact?._id)];
+    if(users[String(contact.id)]) contact.status = users[String(contact.id)];
     this.setState({contact});
   };
 
@@ -170,10 +170,10 @@ class Chat extends React.Component {
     // Set current chat contact.
     this.setState({contact});
     // Mark unseen messages as seen.
-    this.state.socket.emit('seen', String(contact?._id));
+    this.state.socket.emit('seen', String(contact.id));
     let messages = this.state.messages;
     messages.forEach((element, index) => {
-        if(String(element.sender?._id) === String(contact?._id)) messages[index].seen = true;
+        if(String(element.sender) === String(contact.id)) messages[index].seen = true;
     });
     this.setState({messages});
   }
@@ -218,9 +218,9 @@ class Chat extends React.Component {
   renderChat = () => {
     const { contact, user } = this.state;
     if(!contact) return;
-    
+
     // Show only related messages.
-    let messages = this.state.messages.filter(e => String(e.sender?._id) === String(contact?._id) || String(e.receiver?._id) === String(contact?._id));
+    let messages = this.state.messages.filter(e => e.sender === contact.id || e.receiver === contact.id);
     return <Messages user={user} messages={messages} />
 };
 }
