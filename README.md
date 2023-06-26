@@ -1,7 +1,7 @@
 # chat-app-obada
 
 ## 01. Database Tools:
-### - MongoDB NoSQL
+### - `MongoDB NoSQL`
 
 ## 02. Backend Tools:
 ### - NodeJS
